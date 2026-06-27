@@ -1,3 +1,55 @@
+:root {
+    --button-dimensions: min(12vw, 12vh);
+    --buttons-per-row: 3;
+    --default-gap: 5px;
+}
+
 * {
     box-sizing: border-box;
+}
+
+body {
+    text-align: center;
+    font-size: large;
+}
+
+button {
+    width: var(--button-dimensions);
+    height: var(--button-dimensions);
+    margin: var(--default-gap);
+    border-radius: 40%;
+    color: inherit;
+    background-color: #464646;
+    font-size: inherit;
+    border: 2px solid #5B5B5B;
+}
+
+.calculator {
+    border: 1px solid black;
+    border-radius: 10%;
+    width: fit-content;
+    padding: var(--default-gap);
+    margin: auto;
+    background-color: #1B1B1B;
+    color: white;
+    font-size: x-large;
+}
+
+.keypad {
+    display: flex;
+}
+
+.digits {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(var(--button-dimensions) * var(--buttons-per-row) + var(--buttons-per-row) * 2 * var(--default-gap));
+}
+
+.operators {
+    display: flex;
+    flex-direction: column;
+}
+
+.operator {
+    background-color: #FF8B00;
 }
