@@ -49,6 +49,10 @@ const divide = (dividend, divisor) => {
     return quotient;
 }
 
+let number1 = 0;
+let number2 = 0;
+let operator = "";
+
 // Short Debug Log
 // What went wrong, if anything?
 // Which assumption was tested or confirmed?
