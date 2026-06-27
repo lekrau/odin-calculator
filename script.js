@@ -29,7 +29,25 @@
 // Implementation
 "use strict";
 
-// TBD
+const add = (summand1, summand2) => {
+    const sum = summand1 + summand2;
+    return sum;
+};
+
+const subtract = (minuend, subtrahend) => {
+    const difference = minuend - subtrahend;
+    return difference;
+};
+
+const multiply = (factor1, factor2) => {
+    const product = factor1 * factor2;
+    return product;
+}
+
+const divide = (dividend, divisor) => {
+    const quotient = dividend / divisor;
+    return quotient;
+}
 
 // Short Debug Log
 // What went wrong, if anything?
