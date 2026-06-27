@@ -70,8 +70,30 @@ const operate = (operator, number1, number2) => {
     }
 }
 
-let number1 = 0;
-let number2 = 0;
+const processClicks = event => {
+    const target = event.target;
+    const targetClass = target.classList[0];
+    const targetValue = target.textContent;
+    switch (targetClass) {
+        case "digit":
+            number1 += targetValue;
+            updateDisplay(number1);
+            break;
+    
+        default:
+            break;
+    }
+}
+
+const updateDisplay = number => {
+    const display = document.querySelector(".display");
+    display.textContent = number;
+}
+
+document.addEventListener("click", processClicks);
+
+let number1 = "";
+let number2 = "";
 let operator = "";
 
 // Short Debug Log
