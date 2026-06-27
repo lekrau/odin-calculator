@@ -49,6 +49,27 @@ const divide = (dividend, divisor) => {
     return quotient;
 }
 
+const operate = (operator, number1, number2) => {
+    switch (operator) {
+        case "add":
+            return (add(number1, number2));
+            break;
+        case "subtract":
+            return (subtract(number1, number2));
+            break;
+        case "multiply":
+            return (multiply(number1, number2));
+            break;
+        case "divide":
+            return (divide(number1, number2));
+            break;
+    
+        default:
+            return operator(number1, number2);
+            break;
+    }
+}
+
 let number1 = 0;
 let number2 = 0;
 let operator = "";
