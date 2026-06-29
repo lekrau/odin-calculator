@@ -14,29 +14,43 @@ const subtract = (minuend, subtrahend) => {
 const multiply = (factor1, factor2) => {
     const product = factor1 * factor2;
     return product;
-}
+};
 
 const divide = (dividend, divisor) => {
-    const quotient = dividend / divisor;
-    return quotient;
-}
+    if(divisor === 0) {
+        return "Error";
+    } else {
+        const quotient = dividend / divisor;
+        return quotient;
+    }
+};
 
-const operate = (operator, number1, number2) => {
-    const value1 = +number1;
-    const value2 = +number2;
+const operate = (operator, value1, value2) => {
+    value1 = +value1;
+    value2 = +value2;
     switch (operator) {
         case "+":
-            return (add(value1, value2));
+            result = (add(value1, value2));
+            break;
         case "-":
-            return (subtract(value1, value2));
+            result =  (subtract(value1, value2));
+            break;
         case "*":
-            return (multiply(value1, value2));
+            result =  (multiply(value1, value2));
+            break;
         case "/":
-            return (divide(value1, value2));
+            result =  (divide(value1, value2));
+            break;
         default:
-            return operator(value1, value2);
+            result = "Error";
+            alert("Chose an operator");
+            break;
     }
-}
+    updateDisplay(result);
+    number1 = "";
+    number2 = "";
+    return result;
+};
 
 const processClicks = event => {
     const target = event.target;
@@ -44,44 +58,74 @@ const processClicks = event => {
     const targetValue = target.textContent;
     switch (targetClass) {
         case "digit":
-            if (operator === "") {
-                number1 += targetValue;
-                updateDisplay(number1);
-            } else {
-                number2 += targetValue;
-                updateDisplay(number2);
-            }
+            clickDigit(targetValue);
             break;
         case "operator":
-            operator = targetValue;
+            clickOperator(targetValue);
             break;
         case "equal-sign":
-            updateDisplay(operate(operator, number1, number2));
-            number1 = "";
-            number2 = "";
-            operator = "";
+            clickEqual();
             break;
         case "clear":
+            clear();
             break;
         default:
             console.log(target);
             break;
     }
-}
+    console.log("targetValue", targetValue);
+};
+
+const clickDigit = targetValue => {
+    if (operator === "") {
+        number1 += targetValue;
+        updateDisplay(number1);
+    } else {
+        number2 += targetValue;
+        updateDisplay(number2);
+    }
+};
+
+const clickOperator = targetValue => {
+    if (operator !== "") {
+        operate(operator, number1, number2);
+        number1 = result;
+    }
+    operator = targetValue;
+};
+
+
+const clickEqual = () => {
+    if (number1 === "") {
+        alert("Not ready to calculate. Let's start fresh.")
+        clear();
+    } else {
+        operate(operator, number1, number2);
+        operator = "";
+    }
+};
 
 const updateDisplay = value => {
     const display = document.querySelector(".display");
     display.textContent = value;
-}
+};
+
+const clear = () => {
+    number1 = "";
+    number2 = "";
+    result = undefined;
+    operator = "";
+    updateDisplay("-");
+};
+
 
 // DECLARATIONS
-
 let number1 = "";
 let number2 = "";
+let result;
 let operator = "";
 
 // MAIN
-
 document.addEventListener("click", processClicks);
 
 // Short Debug Log
