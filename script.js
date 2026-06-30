@@ -53,6 +53,8 @@ const operate = (operator, value1, value2) => {
 };
 
 const processClicks = event => {
+    console.log(number1);
+    console.log(typeof number1);
     const target = event.target;
     const targetClass = target.classList[0];
     const targetValue = target.textContent;
@@ -69,6 +71,9 @@ const processClicks = event => {
         case "clear":
             clickClear();
             break;
+        case "decimal-separator":
+            clickDecimalSeparator(targetValue);
+            break;
         default:
             console.log(target);
             break;
@@ -84,7 +89,7 @@ const clickDigit = targetValue => {
         status.noFirstNumberYet = false;
         status.firstNumberAvailable = true;
     } else if (status.firstNumberAvailable) {
-        number1 =+ targetValue;
+        number1 += targetValue;
         updateDisplay(number1);
     } else if (status.firstNumberAndOperatorAvailable) {
         number2 = targetValue;
@@ -150,6 +155,35 @@ const clickEqual = () => {
         status.expressionIsComplete = false;
     } else if (status.resultAvailable) {
         updateDisplay("Enter a new number or operator");
+    }
+};
+
+const clickDecimalSeparator = targetValue => {
+     if (status.noFirstNumberYet) {
+        number1 = "0" + targetValue;
+        updateDisplay(number1);
+        status.noFirstNumberYet = false;
+        status.firstNumberAvailable = true;
+    } else if (status.firstNumberAvailable) {
+        if (!number1.includes(targetValue)) {   
+            number1 += targetValue;
+            updateDisplay(number1);
+        }
+    } else if (status.firstNumberAndOperatorAvailable) {
+        number2 = "0" + targetValue;
+        updateDisplay(number2);
+        status.firstNumberAndOperatorAvailable = false;
+        status.expressionIsComplete = true;
+    } else if (status.expressionIsComplete) {
+        if (!number2.includes(targetValue)) {   
+            number2 += targetValue;
+            updateDisplay(number2);
+        }
+    } else if (status.resultAvailable) {
+        number1 = "0" + targetValue;
+        updateDisplay(number1);
+        status.firstNumberAvailable = true;
+        status.resultAvailable = false;
     }
 };
 
