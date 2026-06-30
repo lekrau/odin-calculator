@@ -18,7 +18,8 @@ const multiply = (factor1, factor2) => {
 
 const divide = (dividend, divisor) => {
     if(divisor === 0) {
-        return "Error";
+        // TODO: Status resetten, sodass user nicht mit Error als Ergebnis weiter rechnen kann
+        return "Error: Division by 0";
     } else {
         const quotient = dividend / divisor;
         return quotient;
@@ -42,8 +43,7 @@ const operate = (operator, value1, value2) => {
             result =  (divide(value1, value2));
             break;
         default:
-            result = "Error";
-            alert("Chose an operator");
+            result = "Error: Unknown";
             break;
     }
     updateDisplay(result);
@@ -67,42 +67,103 @@ const processClicks = event => {
             clickEqual();
             break;
         case "clear":
-            clear();
+            clickClear();
             break;
         default:
             console.log(target);
             break;
     }
     console.log("targetValue", targetValue);
+    console.log(getStatus());
 };
 
 const clickDigit = targetValue => {
-    if (operator === "") {
-        number1 += targetValue;
+    if (status.noFirstNumberYet) {
+        number1 = targetValue;
         updateDisplay(number1);
-    } else {
+        status.noFirstNumberYet = false;
+        status.firstNumberAvailable = true;
+    } else if (status.firstNumberAvailable) {
+        number1 =+ targetValue;
+        updateDisplay(number1);
+    } else if (status.firstNumberAndOperatorAvailable) {
+        number2 = targetValue;
+        updateDisplay(number2);
+        status.firstNumberAndOperatorAvailable = false;
+        status.expressionIsComplete = true;
+    } else if (status.expressionIsComplete) {
         number2 += targetValue;
         updateDisplay(number2);
+    } else if (status.resultAvailable) {
+        number1 = targetValue;
+        updateDisplay(number1);
+        status.firstNumberAvailable = true;
+        status.resultAvailable = false;
     }
 };
 
 const clickOperator = targetValue => {
-    if (operator !== "") {
-        operate(operator, number1, number2);
+    if (status.noFirstNumberYet) {
+        updateDisplay("Enter a number first");
+    } else if (status.firstNumberAvailable) {
+        operator = targetValue;
+        status.firstNumberAndOperatorAvailable = true;
+        status.firstNumberAvailable = false;
+    } else if (status.firstNumberAndOperatorAvailable) {
+        operator = targetValue;
+    } else if (status.expressionIsComplete) {
+        updateDisplay(operate(operator, number1, number2));
+        if (isNaN(result)) {
+            status.noFirstNumberYet = true;
+        } else {
+            operator = targetValue;
+            number1 = result;
+            number2 = "";
+            result = null;
+        }
+        status.firstNumberAndOperatorAvailable = true;
+        status.expressionIsComplete = false;
+    } else if (status.resultAvailable) {
+        operator = targetValue;
         number1 = result;
+        number2 = "";
+        result = null;
+        status.firstNumberAndOperatorAvailable = true;
+        status.resultAvailable = false;
     }
-    operator = targetValue;
 };
 
-
 const clickEqual = () => {
-    if (number1 === "") {
-        alert("Not ready to calculate. Let's start fresh.")
-        clear();
-    } else {
-        operate(operator, number1, number2);
-        operator = "";
+    if (status.noFirstNumberYet) {
+        updateDisplay("Enter a number first");
+    } else if (status.firstNumberAvailable) {
+        updateDisplay("Enter an operator first");
+    } else if (status.firstNumberAndOperatorAvailable) {
+        updateDisplay("Enter the second number first");
+    } else if (status.expressionIsComplete) {
+        updateDisplay(operate(operator, number1, number2));
+        if (isNaN(result)) {
+            status.noFirstNumberYet = true;
+        } else {
+            status.resultAvailable = true;
+        }
+        status.expressionIsComplete = false;
+    } else if (status.resultAvailable) {
+        updateDisplay("Enter a new number or operator");
     }
+};
+
+const clickClear = () => {
+    number1 = "";
+    number2 = "";
+    result = undefined;
+    operator = "";
+    updateDisplay("-");
+    noFirstNumberYet: true;
+    firstNumberAvailable: false;
+    firstNumberAndOperatorAvailable: false;
+    expressionIsComplete: false;
+    resultAvailable: false;
 };
 
 const updateDisplay = value => {
@@ -110,20 +171,32 @@ const updateDisplay = value => {
     display.textContent = value;
 };
 
-const clear = () => {
-    number1 = "";
-    number2 = "";
-    result = undefined;
-    operator = "";
-    updateDisplay("-");
+const getStatus = () => {
+    if (status.noFirstNumberYet) {
+        return "noFirstNumberYet";
+    } else if (status.firstNumberAvailable) {
+        return "firstNumberAvailable";
+    } else if (status.firstNumberAndOperatorAvailable) {
+        return "firstNumberAndOperatorAvailable";
+    } else if (status.expressionIsComplete) {
+        return "expressionIsComplete";
+    } else if (status.resultAvailable) {
+        return "resultAvailable";
+    }
 };
-
 
 // DECLARATIONS
 let number1 = "";
 let number2 = "";
 let result;
 let operator = "";
+let status = {
+    noFirstNumberYet: true,
+    firstNumberAvailable: false,
+    firstNumberAndOperatorAvailable: false,
+    expressionIsComplete: false,
+    resultAvailable: false,
+}
 
 // MAIN
 document.addEventListener("click", processClicks);
