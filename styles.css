@@ -47,7 +47,14 @@ button {
 
 .operators {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    width: calc(2 * var(--button-dimensions) + 4 * var(--default-gap));
+}
+
+.backspace, .clear {
+    width: calc(2 * var(--button-dimensions) + 2 * var(--default-gap));
+    background-color: #717171;
+    border-radius: 20px;
 }
 
 .operator {
