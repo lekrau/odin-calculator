@@ -18,7 +18,6 @@ const multiply = (factor1, factor2) => {
 
 const divide = (dividend, divisor) => {
     if(divisor === 0) {
-        // TODO: Status resetten, sodass user nicht mit Error als Ergebnis weiter rechnen kann
         return "Error: Division by 0";
     } else {
         const quotient = dividend / divisor;
@@ -52,6 +51,26 @@ const operate = (operator, value1, value2) => {
     return result;
 };
 
+const processKeys = event => {
+    const key = event.key;
+    const digit = /[0-9]/
+    if (digit.test(key)) {
+        clickDigit(key);
+    } else if (key === "+" || key === "-" || key === "*" || key === "/"){
+        clickOperator(key);
+    } else if (key === "=" || key === "Enter") {
+        clickEqual();
+    } else if (key === "Delete") {
+        clickClear();
+    } else if (key === "." || key === ",") {
+        clickDecimalSeparator(key);
+    } else if (key === "Backspace") {
+        clickBackspace();
+    }
+    // console.log(`key=${event.key},code=${event.code}`);
+    // console.log("getStatus():", getStatus());
+};
+
 const processClicks = event => {
     // console.log("number1:", number1);
     // console.log("typeof number1:", typeof number1);
@@ -78,13 +97,13 @@ const processClicks = event => {
             clickBackspace();
             break;
         default:
-            console.log(target);
+            console.log("target:", target);
             break;
     }
-    // console.log("targetValue:", targetValue);
+    console.log("targetValue:", targetValue);
     // console.log("number1:", number1);
     // console.log("typeof number1:", typeof number1);
-    // console.log("getStatus():", getStatus());
+    console.log("getStatus():", getStatus());
 };
 
 const clickDigit = targetValue => {
@@ -277,6 +296,7 @@ let status = {
 
 // MAIN
 document.addEventListener("click", processClicks);
+document.addEventListener("keydown", processKeys);
 
 // Short Debug Log
 // What went wrong, if anything?
