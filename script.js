@@ -53,8 +53,8 @@ const operate = (operator, value1, value2) => {
 };
 
 const processClicks = event => {
-    console.log(number1);
-    console.log(typeof number1);
+    // console.log("number1:", number1);
+    // console.log("typeof number1:", typeof number1);
     const target = event.target;
     const targetClass = target.classList[0];
     const targetValue = target.textContent;
@@ -74,12 +74,17 @@ const processClicks = event => {
         case "decimal-separator":
             clickDecimalSeparator(targetValue);
             break;
+        case "backspace":
+            clickBackspace();
+            break;
         default:
             console.log(target);
             break;
     }
-    console.log("targetValue", targetValue);
-    console.log(getStatus());
+    // console.log("targetValue:", targetValue);
+    // console.log("number1:", number1);
+    // console.log("typeof number1:", typeof number1);
+    // console.log("getStatus():", getStatus());
 };
 
 const clickDigit = targetValue => {
@@ -187,17 +192,55 @@ const clickDecimalSeparator = targetValue => {
     }
 };
 
+const clickBackspace = () => {
+    if (status.noFirstNumberYet) {
+        updateDisplay("No number to delete");
+    } else if (status.firstNumberAvailable) {
+        const number1Length = number1.length;
+        number1 = number1.slice(0, number1Length - 1);
+        if (number1Length < 2) {
+            status.noFirstNumberYet = true;
+            status.firstNumberAvailable = false;
+            updateDisplay("-");
+        } else {
+            updateDisplay(number1);
+        }
+    } else if (status.firstNumberAndOperatorAvailable) {
+        updateDisplay("No number to delete");
+    } else if (status.expressionIsComplete) {
+        const number2Length = number2.length;
+        number2 = number2.slice(0, number2Length - 1);
+        if (number2Length < 2) {
+            status.firstNumberAndOperatorAvailable = true;
+            status.expressionIsComplete = false;
+            updateDisplay("-");
+        } else {
+            updateDisplay(number2);
+        }
+    } else if (status.resultAvailable) {
+        const number1Length = number1.length;
+        number1 = number1.slice(0, number1Length - 1);
+        if (number1Length < 2) {
+            status.noFirstNumberYet = true;
+            status.resultAvailable = false;
+            updateDisplay("-");
+        } else {
+            updateDisplay(number1);
+        }
+    }
+};
+
 const clickClear = () => {
     number1 = "";
     number2 = "";
     result = undefined;
     operator = "";
     updateDisplay("-");
-    noFirstNumberYet: true;
-    firstNumberAvailable: false;
-    firstNumberAndOperatorAvailable: false;
-    expressionIsComplete: false;
-    resultAvailable: false;
+    status.noFirstNumberYet = true;
+    status.firstNumberAvailable = false;
+    status.firstNumberAndOperatorAvailable = false;
+    status.expressionIsComplete = false;
+    status.resultAvailable = false;
 };
 
 const updateDisplay = value => {
