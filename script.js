@@ -45,6 +45,7 @@ const operate = (operator, value1, value2) => {
             result = "Error: Unknown";
             break;
     }
+    // The result is intentionally not rounded, as it doesn't cause overflow in my UI
     updateDisplay(result);
     number1 = "";
     number2 = "";
@@ -53,7 +54,7 @@ const operate = (operator, value1, value2) => {
 
 const processKeys = event => {
     const key = event.key;
-    const digit = /[0-9]/
+    const digit = /^[0-9]$/;
     if (digit.test(key)) {
         clickDigit(key);
     } else if (key === "+" || key === "-" || key === "*" || key === "/"){
@@ -63,12 +64,13 @@ const processKeys = event => {
     } else if (key === "Delete") {
         clickClear();
     } else if (key === "." || key === ",") {
-        clickDecimalSeparator(key);
+        clickDecimalSeparator(".");
+        // Always pass '.', as this is the decimal separator in JS
     } else if (key === "Backspace") {
         clickBackspace();
     }
-    // console.log(`key=${event.key},code=${event.code}`);
-    // console.log("getStatus():", getStatus());
+    console.log(`key=${event.key},code=${event.code}`);
+    console.log("getStatus():", getStatus());
 };
 
 const processClicks = event => {
@@ -149,8 +151,8 @@ const clickOperator = targetValue => {
             number1 = result;
             number2 = "";
             result = null;
+            status.firstNumberAndOperatorAvailable = true;
         }
-        status.firstNumberAndOperatorAvailable = true;
         status.expressionIsComplete = false;
     } else if (status.resultAvailable) {
         operator = targetValue;
@@ -268,17 +270,27 @@ const updateDisplay = value => {
 };
 
 const getStatus = () => {
+    const result = [];
     if (status.noFirstNumberYet) {
-        return "noFirstNumberYet";
-    } else if (status.firstNumberAvailable) {
-        return "firstNumberAvailable";
-    } else if (status.firstNumberAndOperatorAvailable) {
-        return "firstNumberAndOperatorAvailable";
-    } else if (status.expressionIsComplete) {
-        return "expressionIsComplete";
-    } else if (status.resultAvailable) {
-        return "resultAvailable";
+        result.push("noFirstNumberYet");
     }
+    if (status.firstNumberAvailable) {
+        result.push( "firstNumberAvailable");
+    }
+    if (status.firstNumberAndOperatorAvailable) {
+        result.push( "firstNumberAndOperatorAvailable");
+    }
+    if (status.expressionIsComplete) {
+        result.push( "expressionIsComplete");
+    }
+    if (status.resultAvailable) {
+        result.push( "resultAvailable");
+    }
+    return result;
+};
+
+const disableDecimalButton = () => {
+    // TODO:
 };
 
 // DECLARATIONS
