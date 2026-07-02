@@ -140,6 +140,7 @@ const clickOperator = targetValue => {
         operator = targetValue;
         status.firstNumberAndOperatorAvailable = true;
         status.firstNumberAvailable = false;
+        enableDecimalButton();
     } else if (status.firstNumberAndOperatorAvailable) {
         operator = targetValue;
     } else if (status.expressionIsComplete) {
@@ -154,6 +155,7 @@ const clickOperator = targetValue => {
             status.firstNumberAndOperatorAvailable = true;
         }
         status.expressionIsComplete = false;
+        enableDecimalButton();
     } else if (status.resultAvailable) {
         operator = targetValue;
         number1 = result;
@@ -161,6 +163,7 @@ const clickOperator = targetValue => {
         result = null;
         status.firstNumberAndOperatorAvailable = true;
         status.resultAvailable = false;
+        enableDecimalButton();
     }
 };
 
@@ -179,6 +182,7 @@ const clickEqual = () => {
             status.resultAvailable = true;
         }
         status.expressionIsComplete = false;
+        enableDecimalButton();
     } else if (status.resultAvailable) {
         updateDisplay("Enter a new number or operator");
     }
@@ -211,6 +215,7 @@ const clickDecimalSeparator = targetValue => {
         status.firstNumberAvailable = true;
         status.resultAvailable = false;
     }
+    disableDecimalButton();
 };
 
 const clickBackspace = () => {
@@ -226,6 +231,9 @@ const clickBackspace = () => {
         } else {
             updateDisplay(number1);
         }
+        if (!number1.includes(".")) {
+            enableDecimalButton();
+        }
     } else if (status.firstNumberAndOperatorAvailable) {
         updateDisplay("No number to delete");
     } else if (status.expressionIsComplete) {
@@ -238,6 +246,9 @@ const clickBackspace = () => {
         } else {
             updateDisplay(number2);
         }
+        if (!number2.includes(".")) {
+            enableDecimalButton();
+        }
     } else if (status.resultAvailable) {
         const number1Length = number1.length;
         number1 = number1.slice(0, number1Length - 1);
@@ -247,6 +258,9 @@ const clickBackspace = () => {
             updateDisplay("-");
         } else {
             updateDisplay(number1);
+        }
+        if (!number1.includes(".")) {
+            enableDecimalButton();
         }
     }
 };
@@ -262,6 +276,7 @@ const clickClear = () => {
     status.firstNumberAndOperatorAvailable = false;
     status.expressionIsComplete = false;
     status.resultAvailable = false;
+    enableDecimalButton();
 };
 
 const updateDisplay = value => {
@@ -290,7 +305,19 @@ const getStatus = () => {
 };
 
 const disableDecimalButton = () => {
-    // TODO:
+    const decimalButton = document.querySelector(".decimal-separator");
+    if (!decimalButton.disabled) {
+        decimalButton.disabled = true;
+    }
+    return decimalButton.disabled;
+};
+
+const enableDecimalButton = () => {
+    const decimalButton = document.querySelector(".decimal-separator");
+    if (decimalButton.disabled) {
+        decimalButton.disabled = false;
+    }
+    return decimalButton.disabled;
 };
 
 // DECLARATIONS

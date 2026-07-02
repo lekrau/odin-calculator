@@ -60,3 +60,7 @@ button {
 .operator {
     background-color: #FF8B00;
 }
+
+button:disabled {
+  background-color: #717171;
+}
